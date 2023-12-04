@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/sdl_demo.dir/src/main.cpp.o -o sdl_demo  /usr/lib/x86_64-linux-gnu/libSDL2.so 

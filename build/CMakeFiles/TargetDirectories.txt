@@ -1,0 +1,3 @@
+/home/bl4ck/Documents/Projects/C++/sdl-demo/build/CMakeFiles/sdl_demo.dir
+/home/bl4ck/Documents/Projects/C++/sdl-demo/build/CMakeFiles/edit_cache.dir
+/home/bl4ck/Documents/Projects/C++/sdl-demo/build/CMakeFiles/rebuild_cache.dir
