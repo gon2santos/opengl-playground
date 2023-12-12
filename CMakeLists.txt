@@ -1,11 +1,23 @@
 cmake_minimum_required(VERSION 3.7)
-project(sdl_demo VERSION 0.1.0 LANGUAGES C CXX)
 
+project(chip_eight_emu VERSION 0.1.0 LANGUAGES C CXX)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(SDL2 REQUIRED)
-include_directories(sdl_demo ${SDL2_INCLUDE_DIRS})
+include_directories(CHIP_eight_emulator ${SDL2_INCLUDE_DIRS})
 
-add_executable(sdl_demo ./src/main.cpp)
-target_link_libraries(sdl_demo ${SDL2_LIBRARIES})
+# Set the source files
+set(SOURCES 
+    ./src/main.cpp
+    ./src/include/Game.hpp
+    ./src/include/Game.cpp
+)
+
+# Add an executable target
+add_executable(main ${SOURCES})
+target_link_libraries(main ${SDL2_LIBRARIES})
 
 
 

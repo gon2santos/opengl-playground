@@ -1,22 +1,19 @@
-#include <iostream>
-#include "stdio.h"
-#include <SDL2/SDL.h>
+#include "./include/Game.hpp"
+
+Game *game = nullptr;
 
 int main(int, char**){
+    game = new Game();
 
-    std :: cout << "hello\n"; 
+    game->Init("CHIP-8 emulator", 0, 0, 600, 400, false);
 
-    SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window *window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_SHOWN);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+    while(game->Running()){
+        game->HandleEvents();
+        game->Update();
+        game->Render();
+    }
 
-    SDL_SetRenderDrawColor(renderer, 0, 100, 100, 255);
-
-    SDL_RenderClear(renderer);
-
-    SDL_RenderPresent(renderer);
-
-    SDL_Delay(3000);
+    game->Clean();
 
     return 0;
 }

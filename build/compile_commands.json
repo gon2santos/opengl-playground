@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/bl4ck/Documents/Projects/C++/sdl-demo/build",
-  "command": "/usr/bin/g++  -I/home/bl4ck/Documents/Projects/C++/sdl-demo/sdl_demo -isystem /usr/include/SDL2 -g -o CMakeFiles/sdl_demo.dir/src/main.cpp.o -c /home/bl4ck/Documents/Projects/C++/sdl-demo/src/main.cpp",
-  "file": "/home/bl4ck/Documents/Projects/C++/sdl-demo/src/main.cpp",
-  "output": "CMakeFiles/sdl_demo.dir/src/main.cpp.o"
-}
-]
