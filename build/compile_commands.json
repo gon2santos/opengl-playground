@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/build",
+  "command": "/usr/bin/g++  -I/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/CHIP_eight_emulator -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/main.dir/src/main.cpp.o -c /home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/src/main.cpp",
+  "file": "/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/src/main.cpp",
+  "output": "CMakeFiles/main.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/build",
+  "command": "/usr/bin/g++  -I/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/CHIP_eight_emulator -isystem /usr/include/SDL2 -g -std=gnu++11 -o CMakeFiles/main.dir/src/include/Game.cpp.o -c /home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/src/include/Game.cpp",
+  "file": "/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/src/include/Game.cpp",
+  "output": "CMakeFiles/main.dir/src/include/Game.cpp.o"
+}
+]

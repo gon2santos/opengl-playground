@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "iostream": "cpp",
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -36,7 +37,6 @@
         "utility": "cpp",
         "initializer_list": "cpp",
         "iosfwd": "cpp",
-        "iostream": "cpp",
         "istream": "cpp",
         "limits": "cpp",
         "new": "cpp",
@@ -46,6 +46,5 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    },
-    "cmake.sourceDirectory": "/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator"
+    }
 }

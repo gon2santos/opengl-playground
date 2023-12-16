@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "stdio.h"
 
 class Game{
     public:
@@ -14,11 +15,16 @@ class Game{
         void Render();
         void Clean();
         bool Running(){ return isRunning; };
+        bool LoadMedia();
 
     private:
         bool isRunning;
         SDL_Window *window;
         SDL_Renderer *renderer;
+        SDL_Surface* gPTCG = NULL;
+        SDL_Surface* screenSurface = NULL;
+        
+        int count;
 };
 
 

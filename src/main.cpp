@@ -2,15 +2,26 @@
 
 Game *game = nullptr;
 
-int main(int, char**){
+int main(int, char **)
+{
     game = new Game();
 
-    game->Init("CHIP-8 emulator", 0, 0, 600, 400, false);
+    game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, false);
 
-    while(game->Running()){
-        game->HandleEvents();
-        game->Update();
+    if (!game->LoadMedia())
+    {
+        printf("Failed to load media!\n");
+    }
+    else
+    {
         game->Render();
+    }
+
+    while (game->Running())
+    {
+        game->HandleEvents();
+        //game->Update();
+        //game->Render();
     }
 
     game->Clean();
