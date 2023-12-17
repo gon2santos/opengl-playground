@@ -25,35 +25,52 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
         std::cout << "Error initializing Subsystems. Error: " << SDL_GetError() << std::endl;
     }
 
-    window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-    if (window)
+    gWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+    if (gWindow)
     {
-        screenSurface = SDL_GetWindowSurface(window);
+        //gScreenSurface = SDL_GetWindowSurface(gWindow);
     }
     else
     {
-        std::cout << "Error initializing window" << SDL_GetError() << std::endl;
+        std::cout << "Error initializing window: " << SDL_GetError() << std::endl;
     }
-    /* renderer = SDL_CreateRenderer(window, -1, 0);
-    if (renderer)
+    gRenderer = SDL_CreateRenderer(gWindow, -1, 0);
+    if (gRenderer)
     {
-        SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
-    } 
+        SDL_SetRenderDrawColor(gRenderer, 25, 25, 25, 255);
+    }
     else
     {
-        std::cout << "Error initializing renderer" << SDL_GetError() << std::endl;
-    }*/
+        std::cout << "Error initializing gRenderer: " << SDL_GetError() << std::endl;
+    }
+    stretchRect.x = 0;
+    stretchRect.y = 0;
+    stretchRect.w = width;
+    stretchRect.h = height;
+
     isRunning = true;
 }
 
 void Game::HandleEvents()
 {
-    SDL_Event event;
     SDL_PollEvent(&event);
     switch (event.type)
     {
     case SDL_QUIT:
         isRunning = false;
+        break;
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_UP)
+            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
+        if (event.key.keysym.sym == SDLK_DOWN)
+            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
+        if (event.key.keysym.sym == SDLK_LEFT)
+            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
+        if (event.key.keysym.sym == SDLK_RIGHT)
+            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
+        // SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
+        SDL_BlitScaled(gCurrentSurface, NULL, gScreenSurface, &stretchRect);
+        SDL_UpdateWindowSurface(gWindow);
         break;
     default:
         break;
@@ -66,13 +83,14 @@ void Game::Update()
 
 void Game::Render()
 {
-    // SDL_RenderClear(renderer);
+    SDL_RenderClear(gRenderer);
     //  aca agregar cosas a renderear...
-    // SDL_RenderPresent(renderer);
+    SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+    SDL_RenderPresent(gRenderer);
     //  Apply the image
-    SDL_BlitSurface(gPTCG, NULL, screenSurface, NULL);
+    //SDL_BlitSurface(gPTCG, NULL, gScreenSurface, NULL);
     // Update the surface
-    SDL_UpdateWindowSurface(window);
+    //SDL_UpdateWindowSurface(gWindow);
 }
 
 void Game::Clean()
@@ -80,26 +98,168 @@ void Game::Clean()
     // Deallocate surface
     SDL_FreeSurface(gPTCG);
     gPTCG = NULL;
-    SDL_DestroyWindow(window);
-    window = NULL;
-    SDL_DestroyRenderer(renderer);
-    renderer = NULL;
+    SDL_DestroyTexture( gTexture );
+    gTexture = NULL;
+    SDL_DestroyRenderer(gRenderer);
+    gRenderer = NULL;
+    SDL_DestroyWindow(gWindow);
+    gWindow = NULL;
+    IMG_Quit();
     SDL_Quit();
     std::cout << "Subsystems cleaned" << std::endl;
 }
 
 bool Game::LoadMedia()
 {
+    std::string paths[5];
+    paths[0] = "../assets/imgDEFAULT.bmp";
+    paths[1] = "../assets/imgUP.png";
+    paths[2] = "../assets/imgDOWN.bmp";
+    paths[3] = "../assets/imgLEFT.bmp";
+    paths[4] = "../assets/imgRIGHT.bmp";
+
     // Loading success flag
     bool success = true;
 
-    const char *path = "../assets/pocketTCG.bmp";
-
-    // Load splash image
-    gPTCG = SDL_LoadBMP(path);
-    if (gPTCG == NULL)
+    // Load default surface
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] = LoadSurface(paths[KEY_PRESS_SURFACE_DEFAULT], "BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] == NULL)
     {
-        printf("Unable to load image %s! SDL Error: %s\n", path, SDL_GetError());
+        printf("Failed to load default image!\n");
+        success = false;
+    }
+
+    // Load up surface
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] = LoadSurface(paths[KEY_PRESS_SURFACE_UP], "PNG");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] == NULL)
+    {
+        printf("Failed to load up image!\n");
+        success = false;
+    }
+
+    // Load down surface
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = LoadSurface(paths[KEY_PRESS_SURFACE_DOWN], "BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] == NULL)
+    {
+        printf("Failed to load down image!\n");
+        success = false;
+    }
+
+    // Load left surface
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] = LoadSurface(paths[KEY_PRESS_SURFACE_LEFT], "BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] == NULL)
+    {
+        printf("Failed to load left image!\n");
+        success = false;
+    }
+
+    // Load right surface
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] = LoadSurface(paths[KEY_PRESS_SURFACE_RIGHT], "BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] == NULL)
+    {
+        printf("Failed to load right image!\n");
+        success = false;
+    }
+
+    return success;
+}
+
+SDL_Surface *Game::LoadSurface(std::string path, std::string format)
+{
+    // The final optimized image
+    SDL_Surface *optimizedSurface = NULL;
+    SDL_Surface *loadedSurface = NULL;
+    // Load image at specified path
+    if (format == "PNG")
+    {
+        loadedSurface = IMG_Load(path.c_str());
+        if (loadedSurface == NULL)
+        {
+            printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+        }
+    }
+    else if (format == "BMP")
+    {
+        loadedSurface = SDL_LoadBMP(path.c_str());
+        if (loadedSurface == NULL)
+        {
+            printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+            return NULL;
+        }
+    }
+    else
+    {
+        std::cout << "Incorrect img format: " << format << std::endl;
+        return NULL;
+    }
+
+    // Convert surface to screen format
+    optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface->format, 0);
+    if (optimizedSurface == NULL)
+    {
+        printf("Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+    }
+
+    // Get rid of old loaded surface
+    SDL_FreeSurface(loadedSurface);
+
+    return optimizedSurface;
+}
+
+void Game::SetDefaultMedia()
+{
+    gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+    SDL_BlitScaled(gCurrentSurface, NULL, gScreenSurface, &stretchRect);
+    // SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
+    SDL_UpdateWindowSurface(gWindow);
+}
+
+bool Game::InitPNGLoad()
+{
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
+        printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+        return false;
+    }
+    return true;
+}
+
+SDL_Texture* Game::LoadTexture( std::string path ){
+    //The final texture
+    SDL_Texture* newTexture = NULL;
+
+    //Load image at specified path
+    SDL_Surface* loadedSurface = IMG_Load( path.c_str() ); //NOTA: IMG_LoadTexture allows you to load a texture without having to create a temporary surface!
+    if( loadedSurface == NULL )
+    {
+        printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+    }
+    else
+    {
+        //Create texture from surface pixels
+        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
+        if( newTexture == NULL )
+        {
+            printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+        }
+
+        //Get rid of old loaded surface
+        SDL_FreeSurface( loadedSurface );
+    }
+
+    return newTexture;
+}
+
+bool Game::LoadMediaAsTexture(){
+    //Loading success flag
+    bool success = true;
+
+    //Load PNG texture
+    gTexture = LoadTexture( "../assets/imgUP.png" );
+    if( gTexture == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
         success = false;
     }
 

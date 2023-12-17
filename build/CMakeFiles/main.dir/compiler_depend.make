@@ -21,6 +21,7 @@ CMakeFiles/main.dir/src/include/Game.cpp.o: /home/bl4ck/Documents/Projects/C++/C
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -365,6 +366,7 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -796,6 +798,8 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512cdintrin.h:
 
+/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512bitalgintrin.h:
+
 /usr/include/c++/13/initializer_list:
 
 /usr/include/SDL2/SDL_system.h:
@@ -922,6 +926,12 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h:
 
+/usr/include/c++/13/bits/basic_ios.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/shaintrin.h:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
 /usr/include/SDL2/SDL_log.h:
 
 /usr/include/SDL2/SDL_messagebox.h:
@@ -982,14 +992,6 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 
 /usr/include/SDL2/SDL_guid.h:
 
-/usr/include/c++/13/istream:
-
-/usr/include/SDL2/SDL_events.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
-
-/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
-
 /usr/include/SDL2/SDL_sensor.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512vpopcntdqintrin.h:
@@ -1006,20 +1008,6 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/cpu_defines.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/wbnoinvdintrin.h:
-
-/usr/include/SDL2/SDL_thread.h:
-
-/usr/include/c++/13/bits/new_allocator.h:
-
-/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/src/include/Game.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
-
-/usr/include/SDL2/SDL_metal.h:
-
-/usr/include/c++/13/bits/cxxabi_forced.h:
-
 /usr/include/SDL2/SDL_assert.h:
 
 /usr/include/stdlib.h:
@@ -1035,6 +1023,16 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 /usr/include/SDL2/SDL_mutex.h:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/src/include/Game.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/wbnoinvdintrin.h:
+
+/usr/include/SDL2/SDL_thread.h:
+
+/usr/include/c++/13/bits/new_allocator.h:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/serializeintrin.h:
 
@@ -1054,12 +1052,6 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 
 /usr/include/SDL2/SDL_misc.h:
 
-/usr/include/c++/13/bits/basic_ios.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/shaintrin.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
 /usr/include/c++/13/bits/functional_hash.h:
 
 /usr/include/SDL2/SDL_endian.h:
@@ -1069,6 +1061,10 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 /usr/include/SDL2/SDL_main.h:
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
+
+/usr/include/SDL2/SDL_image.h:
+
+/usr/include/alloca.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/cetintrin.h:
 
@@ -1081,6 +1077,18 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 /usr/include/SDL2/SDL_audio.h:
 
 /usr/include/SDL2/SDL_cpuinfo.h:
+
+/usr/include/SDL2/SDL_events.h:
+
+/usr/include/c++/13/istream:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/SDL2/SDL_metal.h:
+
+/usr/include/c++/13/bits/cxxabi_forced.h:
 
 /usr/include/c++/13/bits/stl_construct.h:
 
@@ -1163,8 +1171,6 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
 /usr/include/c++/13/bits/basic_string.tcc:
-
-/usr/include/alloca.h:
 
 /usr/include/c++/13/bits/stringfwd.h:
 
@@ -1375,5 +1381,3 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/bl4ck/Documents/Projects/C++/CHIP_eigh
 /usr/lib/gcc/x86_64-linux-gnu/13/include/amxfp16intrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx5124vnniwintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512bitalgintrin.h:
