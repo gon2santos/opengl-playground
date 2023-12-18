@@ -85,7 +85,10 @@ void Game::Render()
 {
     SDL_RenderClear(gRenderer);
     //  aca agregar cosas a renderear...
-    SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+    SDL_RenderSetViewport( gRenderer, &fullvpRect ); //settear vp como ventana completa
+    SDL_RenderCopy( gRenderer, gTexture, NULL, NULL ); //renderear imagen de fondo
+    SDL_RenderSetViewport( gRenderer, &smallvpRect ); //settear vp como el mitad de ventana
+    SDL_RenderCopy( gRenderer, viewportTexture, NULL, NULL ); //renderear otra textura en viewport mas chico
     SDL_RenderPresent(gRenderer);
     //  Apply the image
     //SDL_BlitSurface(gPTCG, NULL, gScreenSurface, NULL);
@@ -263,5 +266,26 @@ bool Game::LoadMediaAsTexture(){
         success = false;
     }
 
+    return success;
+}
+
+bool Game::InitSmallViewport(){
+    bool success = true;
+    smallvpRect = { 10, (SCREEN_HEIGHT - (SCREEN_HEIGHT / 3) - 10) , SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3 };
+
+    //Load PNG texture
+    viewportTexture = LoadTexture( "../assets/viewporttest.png" );
+    if( gTexture == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        success = false;
+    }
+
+    return success;
+}
+
+bool Game::InitFullViewport(){
+    bool success = true;
+    fullvpRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     return success;
 }

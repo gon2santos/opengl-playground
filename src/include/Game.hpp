@@ -7,6 +7,9 @@
 #include <SDL2/SDL_image.h>
 #include <string>
 
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 400
+
 class Game
 {
 public:
@@ -22,7 +25,12 @@ public:
     bool InitPNGLoad();
     SDL_Texture* LoadTexture( std::string path );
     SDL_Texture* gTexture = NULL;
+    SDL_Texture* viewportTexture = NULL;
+    SDL_Rect smallvpRect;
+    SDL_Rect fullvpRect;
     bool LoadMediaAsTexture();
+    bool InitSmallViewport();
+    bool InitFullViewport();
 
     void SetDefaultMedia();
 
@@ -49,9 +57,6 @@ private:
     SDL_Surface *gPTCG = NULL;
     SDL_Surface *gScreenSurface = NULL;
     SDL_Event event;
-
-    
-
     int count;
 };
 

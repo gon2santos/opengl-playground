@@ -8,13 +8,23 @@ int main(int, char **)
 {
     game = new Game();
 
-    game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, false);
+    game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
 
     game->InitPNGLoad();
 
     if (!game->LoadMediaAsTexture())
     {
         printf("Failed to load media as texture!\n");
+    }
+
+    if (!game->InitSmallViewport())
+    {
+        printf("Failed to init viewport!\n");
+    }
+
+    if (!game->InitFullViewport())
+    {
+        printf("Failed to init viewport!\n");
     }
 
     /* if (!game->LoadMedia())
