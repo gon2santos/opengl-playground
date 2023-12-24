@@ -6,6 +6,7 @@
 #include "stdio.h"
 #include <SDL2/SDL_image.h>
 #include <string>
+#include <GLES3/gl3.h>
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400
@@ -31,6 +32,7 @@ public:
     bool LoadMediaAsTexture();
     bool InitSmallViewport();
     bool InitFullViewport();
+    void SDLDie(const char* msg);
 
     void SetDefaultMedia();
 
@@ -54,6 +56,7 @@ private:
     bool isRunning;
     SDL_Window *gWindow;
     SDL_Renderer *gRenderer;
+    SDL_GLContext maincontext;
     SDL_Surface *gPTCG = NULL;
     SDL_Surface *gScreenSurface = NULL;
     SDL_Event event;

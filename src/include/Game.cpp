@@ -24,8 +24,15 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     {
         std::cout << "Error initializing Subsystems. Error: " << SDL_GetError() << std::endl;
     }
+    //Request opengl 3.2 context
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
-    gWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+    //Turn on double buffering with a 24bit Z buffer.
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    gWindow = SDL_CreateWindow(title, xpos, ypos, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN/* flags */);
     if (gWindow)
     {
         //gScreenSurface = SDL_GetWindowSurface(gWindow);
@@ -34,7 +41,42 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     {
         std::cout << "Error initializing window: " << SDL_GetError() << std::endl;
     }
-    gRenderer = SDL_CreateRenderer(gWindow, -1, 0);
+    maincontext = SDL_GL_CreateContext(gWindow);
+    SDL_GL_SetSwapInterval(1);
+
+    /* Clear our buffer with a red background */
+    glClearColor ( 1.0, 0.0, 0.0, 1.0 );
+    glClear ( GL_COLOR_BUFFER_BIT );
+    /* Swap our back buffer to the front */
+    SDL_GL_SwapWindow(gWindow);
+    /* Wait 2 seconds */
+    SDL_Delay(2000);
+
+    /* Same as above, but green */
+    glClearColor ( 0.0, 1.0, 0.0, 1.0 );
+    glClear ( GL_COLOR_BUFFER_BIT );
+    SDL_GL_SwapWindow(gWindow);
+    SDL_Delay(2000);
+
+    /* Same as above, but blue */
+    glClearColor ( 0.0, 0.0, 1.0, 1.0 );
+    glClear ( GL_COLOR_BUFFER_BIT );
+    SDL_GL_SwapWindow(gWindow);
+    SDL_Delay(2000);
+
+    /* Delete our opengl context, destroy our window, and shutdown SDL */
+    SDL_GL_DeleteContext(maincontext);
+    SDL_DestroyWindow(gWindow);
+    gWindow = NULL;
+    SDL_Quit();
+
+    return;
+
+
+
+
+
+    /* gRenderer = SDL_CreateRenderer(gWindow, -1, 0);
     if (gRenderer)
     {
         SDL_SetRenderDrawColor(gRenderer, 25, 25, 25, 255);
@@ -48,7 +90,7 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     stretchRect.w = width;
     stretchRect.h = height;
 
-    isRunning = true;
+    isRunning = true; */
 }
 
 void Game::HandleEvents()
@@ -288,4 +330,10 @@ bool Game::InitFullViewport(){
     bool success = true;
     fullvpRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     return success;
+}
+
+void Game::SDLDie(const char* msg){
+    std::cout << msg << SDL_GetError() << std::endl;
+    SDL_Quit();
+    exit(1);
 }

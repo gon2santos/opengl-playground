@@ -283,4 +283,5 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
  /usr/include/c++/13/bits/istream.tcc /usr/include/SDL2/SDL_image.h \
- /usr/include/SDL2/SDL.h
+ /usr/include/SDL2/SDL.h /usr/include/GLES3/gl3.h \
+ /usr/include/GLES3/gl3platform.h /usr/include/KHR/khrplatform.h

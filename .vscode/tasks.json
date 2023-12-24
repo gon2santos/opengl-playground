@@ -11,6 +11,7 @@
                 "${workspaceFolder}/src/include/Game.cpp",
                 "-o",
                 "${workspaceFolder}/build/debug/main",
+                "-lGL",
                 "-lSDL2",
                 "-lSDL2_image"
             ],
