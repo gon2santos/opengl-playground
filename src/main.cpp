@@ -1,4 +1,4 @@
-//g++ -o main ./src/main.cpp ./src/include/Game.cpp -w -lSDL2 -lSDL2_image -g
+// g++ -o main ./src/main.cpp ./src/include/Game.cpp -w -lSDL2 -lSDL2_image -g
 
 #include "./include/Game.hpp"
 
@@ -10,37 +10,12 @@ int main(int, char **)
 
     game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
 
-    game->InitPNGLoad();
-
-    if (!game->LoadMediaAsTexture())
-    {
-        printf("Failed to load media as texture!\n");
-    }
-
-    if (!game->InitSmallViewport())
-    {
-        printf("Failed to init viewport!\n");
-    }
-
-    if (!game->InitFullViewport())
-    {
-        printf("Failed to init viewport!\n");
-    }
-
-    /* if (!game->LoadMedia())
-    {
-        printf("Failed to load media!\n");
-    }
-    else
-    {
-        //set default surface
-        game->SetDefaultMedia();
-    } */
+    game->InitBufferObjectsAndSetupShaders();
 
     while (game->Running())
     {
         game->HandleEvents();
-        //game->Update();
+        // game->Update();
         game->Render();
     }
 
