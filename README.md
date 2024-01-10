@@ -1,1 +1,1 @@
-A (WIP) C++ CHIP-8 emulator. Uses SDL2 and OpenGl 3
+A (WIP) CHIP-8 emulator written in C++

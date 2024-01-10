@@ -1,3 +1,0 @@
-/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/build/CMakeFiles/main.dir
-/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/build/CMakeFiles/edit_cache.dir
-/home/bl4ck/Documents/Projects/C++/CHIP_eight_emulator/build/CMakeFiles/rebuild_cache.dir
