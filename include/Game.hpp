@@ -1,9 +1,9 @@
 #ifndef Game_hpp
 #define Game_hpp
 
+#include "glad/glad.h"
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "glad/glad.h"
 #include <SDL2/SDL_image.h>
 // #include <GL/gl.h> //modo inmediato como glBegin o glColor3f, no usar
 

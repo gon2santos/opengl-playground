@@ -19,8 +19,6 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     else
         std::cout << "Error initializing Subsystems. Error: " << SDL_GetError() << std::endl;
 
-    gladLoadGL();
-
     // Request opengl 3.2 context with core profile
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -31,7 +29,7 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
     // window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-    window = SDL_CreateWindow("OpenGL Viewport Example",
+    window = SDL_CreateWindow("OpenGL context window",
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               800, 600, SDL_WINDOW_OPENGL);
     if (!window)
@@ -42,7 +40,15 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     if (!maincontext)
         SDLDie("failed to create context ");
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    // INITIALIZE GLAD:
+    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+    }
+
+    glViewport(0, 0, 800, 600);
+
+    glClearColor(1.0f, 0.0f, 0.0f, 0.5f);
     isRunning = true;
     return;
 }
