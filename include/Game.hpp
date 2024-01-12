@@ -35,6 +35,7 @@ public:
     unsigned int vertexShader;
     unsigned int fragmentShader;
     Shader *shaderProgram;
+    float count = 0;
 
 private:
     bool isRunning;

@@ -71,8 +71,13 @@ void Game::Update()
 
 void Game::Render()
 {
+    double elapsedTime = SDL_GetTicks() / 1000.0;
+    count += sin(elapsedTime) / 100.0f;
+    std::cout << count << std::endl;
+    int offsetUfm = glGetUniformLocation(shaderProgram->ID, "offset");
     glClear(GL_COLOR_BUFFER_BIT);
     shaderProgram->use();
+    glUniform1f(offsetUfm, count - 0.5f);
     glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
     glDrawArrays(GL_TRIANGLES, 0, 3);
     SDL_GL_SwapWindow(window);
