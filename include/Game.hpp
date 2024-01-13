@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include "Shader.hpp"
+#include "stb_image.h"
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400

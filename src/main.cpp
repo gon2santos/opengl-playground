@@ -1,4 +1,4 @@
-// g++ -o main ./src/main.cpp ./src/glad.c ./include/Game.cpp ./include/Shader.cpp -w -lSDL2 -g
+// g++ -o main ./src/main.cpp ./src/glad.c ./include/Game.cpp ./include/Shader.cpp ./include/stb_image.cpp -w -lSDL2 -g
 
 #include "../include/Game.hpp"
 Game *game = nullptr;
