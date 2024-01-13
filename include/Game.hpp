@@ -24,11 +24,15 @@ public:
     void SDLDie(const char *msg);
     void InitBufferObjectsAndSetupShaders();
 
-    float vertices[18] = {
+    float vertices[36] = {
+        // rectangulo
         // positions         // colors
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // top
+        -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // top left (first)
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,   // top right (first)
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right (first)
+        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top left (second)
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left (second)
+        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f   // bottom right (second)
     };
 
     unsigned int VBO;
