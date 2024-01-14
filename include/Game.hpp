@@ -23,7 +23,7 @@ public:
     bool Running() { return isRunning; };
     void SDLDie(const char *msg);
     void Setup();
-    void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex);
+    void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode);
     float vertexAttributes[32] = {
         /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
         /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.0, 0.5, 0.0, /*txt*/ 1.0, 1.0,
@@ -36,7 +36,7 @@ public:
     //                  | 1
     //                  |
     // (-0.5, 0.5)      |       (0.5, 0.5)
-    //        0         |          1/5
+    //        0         |          1
     //                  |
     //                  |
     //                  |
@@ -44,20 +44,19 @@ public:
     //                  |
     //                  |
     //                  |
-    //        2/3       |          4
+    //        2         |          3
     // (-0.5, -0.5)     |       (0.5, -0.5)
     //                  |
     //                  | -1
 
     // texture coordinates
-    // |(0.0, 0.1)               (1.0, 1.0)
-    // |        +----------------+
-    // |        |    |      |    |
-    // |        |       --       |
-    // |        |  \__________/  |
-    // |        +----------------+
-    // |___________________________________
-    //  (0.0, 0.0)               (1.0, 0.0)
+    // |(0.0, 0.1)      (1.0, 1.0)
+    // |+----------------+
+    // ||    |      |    |
+    // ||       --       |
+    // ||  \__________/  |
+    // |+----------------+__________
+    //  (0.0, 0.0)      (1.0, 0.0)
 
     unsigned int VBO;
     unsigned int VAO;
@@ -65,7 +64,7 @@ public:
     unsigned int vertexShader;
     unsigned int fragmentShader;
     Shader *shaderProgram;
-    float count = 0;
+    float count = 0.0f;
     unsigned int texture0;
     unsigned int texture1;
 

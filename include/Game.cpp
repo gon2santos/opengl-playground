@@ -57,8 +57,25 @@ void Game::HandleEvents()
     switch (event.type)
     {
     case SDL_QUIT:
-    case SDL_KEYDOWN:
         isRunning = false;
+        break;
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_UP)
+        {
+            int lvlLocation = glGetUniformLocation(shaderProgram->ID, "lvl");
+            shaderProgram->use();
+            if (count < 1.0f)
+                count += 0.1f;
+            glUniform1f(lvlLocation, count);
+        }
+        if (event.key.keysym.sym == SDLK_DOWN)
+        {
+            int lvlLocation = glGetUniformLocation(shaderProgram->ID, "lvl");
+            shaderProgram->use();
+            if (count > 0.1f)
+                count -= 0.1f;
+            glUniform1f(lvlLocation, count);
+        }
         break;
     default:
         break;
@@ -106,7 +123,7 @@ void Game::Setup() // sets buffer objects and generates the shader program
     glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
 }
 
-void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex)
+void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode)
 {
     int width, height, nrChannels;
 
@@ -114,11 +131,11 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
     glBindTexture(GL_TEXTURE_2D, *texture);
 
     // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode); // GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_set_flip_vertically_on_load(true); // set flip loaded image on the y-axis
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR
+    stbi_set_flip_vertically_on_load(true);                            // set flip loaded image on the y-axis
     unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
     if (data)
     {

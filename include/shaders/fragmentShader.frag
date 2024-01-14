@@ -6,9 +6,10 @@ in vec2 textCoord;
 
 uniform sampler2D texture0;
 uniform sampler2D texture1;
+uniform float lvl;
 
 void main()
 {
-    FragColor=mix(texture(texture0,textCoord),texture(texture1,textCoord)+vec4(.0627,.0196,.6588,.5),.2);
+    FragColor=mix(texture(texture0,textCoord),texture(texture1,vec2(textCoord.x,textCoord.y)),lvl);
 }
 
