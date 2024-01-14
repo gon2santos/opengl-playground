@@ -23,11 +23,12 @@ public:
     bool Running() { return isRunning; };
     void SDLDie(const char *msg);
     void Setup();
-    float vertexAttributes[24] = {
-        /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0,
-        /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0,
-        /*pos*/ -0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0,
-        /*pos*/ 0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0};
+    void Loadtexture();
+    float vertexAttributes[32] = {
+        /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
+        /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 1.0, 1.0,
+        /*pos*/ -0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 0.0,
+        /*pos*/ 0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 1.0, 0.0};
 
     int vertexIndices[6] = {
         0, 1, 2, 1, 2, 3};
@@ -48,6 +49,16 @@ public:
     //                  |
     //                  | -1
 
+    // texture coordinates
+    // |(0.0, 0.1)               (1.0, 1.0)
+    // |        +----------------+
+    // |        |    |      |    |
+    // |        |       --       |
+    // |        |  \__________/  |
+    // |        +----------------+
+    // |___________________________________
+    //  (0.0, 0.0)               (1.0, 0.0)
+
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
@@ -55,6 +66,7 @@ public:
     unsigned int fragmentShader;
     Shader *shaderProgram;
     float count = 0;
+    unsigned int texture;
 
 private:
     bool isRunning;
