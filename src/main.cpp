@@ -7,7 +7,8 @@ int main(int, char **)
     game = new Game();
     game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
     game->Setup();
-    game->Loadtexture();
+    game->Loadtexture(&game->texture0, "./include/assets/container.jpg", GL_RGB, 0);
+    game->Loadtexture(&game->texture1, "./include/assets/awesomeface.png", GL_RGBA, 1);
     while (game->Running())
     {
         game->HandleEvents();

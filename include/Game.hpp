@@ -23,12 +23,12 @@ public:
     bool Running() { return isRunning; };
     void SDLDie(const char *msg);
     void Setup();
-    void Loadtexture();
+    void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex);
     float vertexAttributes[32] = {
         /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
-        /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 1.0, 1.0,
-        /*pos*/ -0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 0.0,
-        /*pos*/ 0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 1.0, 0.0};
+        /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.0, 0.5, 0.0, /*txt*/ 1.0, 1.0,
+        /*pos*/ -0.5, -0.5, 0.0, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0, 0.0,
+        /*pos*/ 0.5, -0.5, 0.0, /*clr*/ 0.3, 0.0, 0.3, /*txt*/ 1.0, 0.0};
 
     int vertexIndices[6] = {
         0, 1, 2, 1, 2, 3};
@@ -66,7 +66,8 @@ public:
     unsigned int fragmentShader;
     Shader *shaderProgram;
     float count = 0;
-    unsigned int texture;
+    unsigned int texture0;
+    unsigned int texture1;
 
 private:
     bool isRunning;

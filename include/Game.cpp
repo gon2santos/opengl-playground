@@ -72,8 +72,14 @@ void Game::Update()
 void Game::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
+
+    // bind textures on corresponding texture units
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
     shaderProgram->use();
-    glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     SDL_GL_SwapWindow(window);
@@ -100,31 +106,38 @@ void Game::Setup() // sets buffer objects and generates the shader program
     glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
 }
 
-void Game::Loadtexture()
+void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex)
 {
     int width, height, nrChannels;
 
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, texture);
+    glBindTexture(GL_TEXTURE_2D, *texture);
 
     // set the texture wrapping/filtering options (on the currently bound texture object)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    unsigned char *data = stbi_load("./include/assets/container.jpg", &width, &height, &nrChannels, 0);
+    stbi_set_flip_vertically_on_load(true); // set flip loaded image on the y-axis
+    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
     {
         std::cout << "LoadTexture: Failed to load image data." << std::endl;
     }
-
     stbi_image_free(data);
+
+    std::ostringstream oss;
+    oss << "texture" << textureIndex;
+    std::string textureName = oss.str();
+
+    shaderProgram->use();
+    shaderProgram->setInt(textureName, textureIndex);
+    std::cout << "set " + textureName + " unit" << std::endl;
 }
 
 void Game::Clean()
