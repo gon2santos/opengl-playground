@@ -6,7 +6,7 @@ int main(int, char **)
 {
     game = new Game();
     game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
-    game->InitBufferObjectsAndSetupShaders();
+    game->Setup();
     while (game->Running())
     {
         game->HandleEvents();

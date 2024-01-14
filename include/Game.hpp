@@ -22,21 +22,35 @@ public:
     void Clean();
     bool Running() { return isRunning; };
     void SDLDie(const char *msg);
-    void InitBufferObjectsAndSetupShaders();
+    void Setup();
+    float vertexAttributes[24] = {
+        /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0,
+        /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0,
+        /*pos*/ -0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0,
+        /*pos*/ 0.5, -0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0};
 
-    float vertices[36] = {
-        // rectangulo
-        // positions         // colors
-        -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // top left (first)
-        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,   // top right (first)
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right (first)
-        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top left (second)
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left (second)
-        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f   // bottom right (second)
-    };
+    int vertexIndices[6] = {
+        0, 1, 2, 1, 2, 3};
+
+    //                  | 1
+    //                  |
+    // (-0.5, 0.5)      |       (0.5, 0.5)
+    //        0         |          1/5
+    //                  |
+    //                  |
+    //                  |
+    //-1 -------------------------------- 1
+    //                  |
+    //                  |
+    //                  |
+    //        2/3       |          4
+    // (-0.5, -0.5)     |       (0.5, -0.5)
+    //                  |
+    //                  | -1
 
     unsigned int VBO;
     unsigned int VAO;
+    unsigned int EBO;
     unsigned int vertexShader;
     unsigned int fragmentShader;
     Shader *shaderProgram;

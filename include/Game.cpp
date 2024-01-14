@@ -46,7 +46,7 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
 
     glViewport(0, 0, 800, 600);
 
-    glClearColor(0.2f, 0.2f, 0.0f, 0.5f);
+    glClearColor(0.1f, 0.1f, 0.12f, 0.3f);
     isRunning = true;
     return;
 }
@@ -74,19 +74,21 @@ void Game::Render()
     glClear(GL_COLOR_BUFFER_BIT);
     shaderProgram->use();
     glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); //no necesito bindiear el EBO por que queda guardado si lo bindeo dps de bindiear el VAO
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     SDL_GL_SwapWindow(window);
 }
 
-void Game::InitBufferObjectsAndSetupShaders()
+void Game::Setup() // sets buffer objects and generates the shader program
 {
-
+    glGenBuffers(1, &EBO);
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices), vertexIndices, GL_STATIC_DRAW);
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexAttributes), vertexAttributes, GL_STATIC_DRAW);
     shaderProgram = new Shader("./include/shaders/vertexShader.vs", "./include/shaders/fragmentShader.fs");
 
     // glVertexAttribPointer(indice, cant de componentes por atributo, tipo del componente, normalizado?, stride, offset)
