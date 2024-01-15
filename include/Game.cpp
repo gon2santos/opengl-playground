@@ -96,8 +96,26 @@ void Game::Render()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture1);
 
-    shaderProgram->use();
     glBindVertexArray(VAO);
+
+    // primer container
+    int transformLocation = glGetUniformLocation(shaderProgram->ID, "transform");
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(-0.5f, 0.0f, 0.0f));
+    trans = glm::rotate(trans, (glm::radians((float)SDL_GetTicks() / 100)), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+    shaderProgram->use();
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // second container
+    transformLocation = glGetUniformLocation(shaderProgram->ID, "transform");
+    trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(0.5f, 0.5f, 0.0f));
+    float scl = ((sin((float)SDL_GetTicks() / 1000) / 2) + 0.5f);
+    trans = glm::scale(trans, glm::vec3(scl, scl, scl));
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     SDL_GL_SwapWindow(window);
 }
@@ -162,7 +180,7 @@ void Game::GLMTest() // transformar (orden en codigo transladar -> rotar -> esca
     glm::mat4 trans = glm::mat4(1.0f);                                            // crear matriz inicial identidad
     trans = glm::translate(trans, glm::vec3(0.5f, 0.0f, 0.0f));                   // matriz translacion
     trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // matriz rotacion
-    trans = glm::scale(trans, glm::vec3(1.5f, 1.5f, 1.5f));                       // matriz escalar
+    trans = glm::scale(trans, glm::vec3(0.6f, 0.6f, 0.6f));                       // matriz escalar
     shaderProgram->use();
     int transformLocation = glGetUniformLocation(shaderProgram->ID, "transform");
     glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));

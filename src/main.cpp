@@ -10,7 +10,7 @@ int main(int, char **)
     game->Loadtexture(&game->texture0, "./include/assets/container.jpg", GL_RGB, 0, GL_CLAMP_TO_EDGE);
     game->Loadtexture(&game->texture1, "./include/assets/awesomeface.png", GL_RGBA, 1, GL_REPEAT);
 
-    game->GLMTest();
+    // game->GLMTest();
 
     while (game->Running())
     {
