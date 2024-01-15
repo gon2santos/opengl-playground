@@ -72,7 +72,7 @@ void Game::HandleEvents()
         {
             int lvlLocation = glGetUniformLocation(shaderProgram->ID, "lvl");
             shaderProgram->use();
-            if (count > 0.1f)
+            if (count > -2.0f)
                 count -= 0.1f;
             glUniform1f(lvlLocation, count);
         }
@@ -155,6 +155,15 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
     shaderProgram->use();
     shaderProgram->setInt(textureName, textureIndex);
     std::cout << "set " + textureName + " unit" << std::endl;
+}
+
+void Game::GLMTest()
+{
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+    vec = trans * vec;
+    std::cout << vec.x << vec.y << vec.z << std::endl;
 }
 
 void Game::Clean()
