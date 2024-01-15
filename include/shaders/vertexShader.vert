@@ -5,9 +5,12 @@ layout(location=2)in vec2 aTxt;//tercer atributo vertex texture pos mapping
 
 out vec3 ourColor;
 out vec2 textCoord;
+
+uniform mat4 transform;
+
 void main()
 {
-    gl_Position=vec4(aPos.x,aPos.y,aPos.z,1.);
+    gl_Position=transform*vec4(aPos,1.);
     ourColor=aColor;
     textCoord=aTxt;
 }

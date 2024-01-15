@@ -157,13 +157,15 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
     std::cout << "set " + textureName + " unit" << std::endl;
 }
 
-void Game::GLMTest()
+void Game::GLMTest() // transformar (orden en codigo transladar -> rotar -> escalar)
 {
-    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-    vec = trans * vec;
-    std::cout << vec.x << vec.y << vec.z << std::endl;
+    glm::mat4 trans = glm::mat4(1.0f);                                            // crear matriz inicial identidad
+    trans = glm::translate(trans, glm::vec3(0.5f, 0.0f, 0.0f));                   // matriz translacion
+    trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // matriz rotacion
+    trans = glm::scale(trans, glm::vec3(1.5f, 1.5f, 1.5f));                       // matriz escalar
+    shaderProgram->use();
+    int transformLocation = glGetUniformLocation(shaderProgram->ID, "transform");
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
 }
 
 void Game::Clean()
