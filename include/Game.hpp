@@ -27,7 +27,7 @@ public:
     void SDLDie(const char *msg);
     void Setup();
     void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode);
-    void GLMTransform();
+    void GLMTransform(glm::vec3 loc, int ticks);
     float vertexAttributes_plane[32] = {
         /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
         /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.0, 0.5, 0.0, /*txt*/ 1.0, 1.0,

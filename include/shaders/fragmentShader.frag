@@ -10,6 +10,6 @@ uniform float lvl;
 
 void main()
 {
-    FragColor=mix(texture(texture0,textCoord),texture(texture1,vec2(textCoord.x,textCoord.y)),.2f);
+    FragColor=mix(texture(texture0,textCoord),texture(texture1,vec2(textCoord.x,textCoord.y)),.5);
 }
 

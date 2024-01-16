@@ -88,7 +88,8 @@ void Game::Update()
 
 void Game::Render()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    int ticks = SDL_GetTicks();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
@@ -98,8 +99,7 @@ void Game::Render()
 
     glBindVertexArray(VAO);
 
-    GLMTransform();
-
+    GLMTransform(glm::vec3(0.0, 0.0, -3.0), ticks);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -125,6 +125,8 @@ void Game::Setup() // sets buffer objects and generates the shader program
     glEnableVertexAttribArray(1);                                                                    // habilitar este atributo (color)
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float))); // texture attibute
     glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode)
@@ -161,15 +163,17 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
     std::cout << "set " + textureName + " unit" << std::endl;
 }
 
-void Game::GLMTransform() // transformar (orden en codigo transladar -> rotar -> escalar)
+void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codigo transladar -> rotar -> escalar)
 {
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians((float)SDL_GetTicks() / 100), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    view = glm::rotate(view, glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     glm::mat4 proj = glm::mat4(1.0f);
-    proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+    model = glm::rotate(model, glm::radians((float)ticks / 50), glm::vec3(0.0f, 0.0f, 1.0f));
+    view = glm::translate(view, glm::vec3(0.0f + loc.x, 0.0f + loc.y, 0.0f + loc.z));
+    view = glm::rotate(view, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    proj = glm::perspective(glm::radians(-45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
+
     shaderProgram->use();
     int modelLoc = glGetUniformLocation(shaderProgram->ID, "model");
     int viewLoc = glGetUniformLocation(shaderProgram->ID, "view");
