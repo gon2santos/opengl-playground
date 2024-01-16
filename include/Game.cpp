@@ -100,7 +100,9 @@ void Game::Render()
 
     GLMTransform();
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     SDL_GL_SwapWindow(window);
 }
 
@@ -109,11 +111,11 @@ void Game::Setup() // sets buffer objects and generates the shader program
     glGenBuffers(1, &EBO);
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // importante que se bindee despues del VAO!
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices), vertexIndices, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // importante que se bindee despues del VAO!
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices_plane), vertexIndices_plane, GL_STATIC_DRAW);
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexAttributes), vertexAttributes, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexAttributes_cube), vertexAttributes_cube, GL_STATIC_DRAW);
     shaderProgram = new Shader("./include/shaders/vertexShader.vert", "./include/shaders/fragmentShader.frag");
 
     // glVertexAttribPointer(indice, cant de componentes por atributo, tipo del componente, normalizado?, stride, offset)
@@ -162,9 +164,10 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
 void Game::GLMTransform() // transformar (orden en codigo transladar -> rotar -> escalar)
 {
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // model matrix: rotated on x axis
+    model = glm::rotate(model, glm::radians((float)SDL_GetTicks() / 100), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 view = glm::mat4(1.0f);
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    view = glm::rotate(view, glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     glm::mat4 proj = glm::mat4(1.0f);
     proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
     shaderProgram->use();
