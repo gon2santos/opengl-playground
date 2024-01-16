@@ -27,7 +27,7 @@ public:
     void SDLDie(const char *msg);
     void Setup();
     void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode);
-    void GLMTest();
+    void GLMTransform();
     float vertexAttributes[32] = {
         /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
         /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.0, 0.5, 0.0, /*txt*/ 1.0, 1.0,
@@ -36,22 +36,22 @@ public:
 
     int vertexIndices[6] = {
         0, 1, 2, 1, 2, 3};
-
-    //                  | 1
-    //                  |
-    // (-0.5, 0.5)      |       (0.5, 0.5)
-    //        0         |          1
-    //                  |
-    //                  |
-    //                  |
+    // Normalized device coordinates
+    //                   | 1
+    //                   |
+    //  (-0.5, 0.5)      |       (0.5, 0.5)
+    //         0         |          1
+    //                   |
+    //                   |
+    //                   |
     //-1 -------------------------------- 1
-    //                  |
-    //                  |
-    //                  |
-    //        2         |          3
-    // (-0.5, -0.5)     |       (0.5, -0.5)
-    //                  |
-    //                  | -1
+    //                   |
+    //                   |
+    //                   |
+    //         2         |          3
+    //  (-0.5, -0.5)     |       (0.5, -0.5)
+    //                   |
+    //                   | -1
 
     // texture coordinates
     // |(0.0, 0.1)      (1.0, 1.0)
