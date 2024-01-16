@@ -114,6 +114,13 @@ public:
     float count = 0.0f;
     unsigned int texture0;
     unsigned int texture1;
+    // camera
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); // direccion es en verdad la dir opuesta a donde la camara apunta
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); // vector que apunta hacia la derecha en la camara (eje +X)
+    glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);           // vector que punta hacia arriba de la camara
 
 private:
     bool isRunning;
