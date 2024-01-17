@@ -62,19 +62,19 @@ void Game::HandleEvents()
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_UP)
         {
-            int lvlLocation = glGetUniformLocation(shaderProgram->ID, "lvl");
-            shaderProgram->use();
-            if (count < 1.0f)
-                count += 0.1f;
-            glUniform1f(lvlLocation, count);
+            cameraPos += cameraSpeed * cameraFront;
         }
         if (event.key.keysym.sym == SDLK_DOWN)
         {
-            int lvlLocation = glGetUniformLocation(shaderProgram->ID, "lvl");
-            shaderProgram->use();
-            if (count > -2.0f)
-                count -= 0.1f;
-            glUniform1f(lvlLocation, count);
+            cameraPos -= cameraSpeed * cameraFront;
+        }
+        if (event.key.keysym.sym == SDLK_LEFT)
+        {
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        }
+        if (event.key.keysym.sym == SDLK_RIGHT)
+        {
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
         }
         break;
     default:
@@ -98,9 +98,11 @@ void Game::Render()
     glBindTexture(GL_TEXTURE_2D, texture1);
 
     glBindVertexArray(VAO);
-
-    GLMTransform(glm::vec3(0.0, 0.0, -3.0), ticks);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (int i = 0; i < 3; i++)
+    {
+        GLMTransform(cubPos[i], ticks);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     SDL_GL_SwapWindow(window);
@@ -165,13 +167,16 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
 
 void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codigo transladar -> rotar -> escalar)
 {
+    const float radius = 10.0f;
+    float camX = sin((float)ticks / 1000) * radius;
+    float camZ = cos((float)ticks / 1000) * radius;
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 proj = glm::mat4(1.0f);
-
-    model = glm::rotate(model, glm::radians((float)ticks / 50), glm::vec3(0.0f, 0.0f, 1.0f));
-    view = glm::translate(view, glm::vec3(0.0f + loc.x, 0.0f + loc.y, 0.0f + loc.z));
-    view = glm::rotate(view, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 view;
+    view = glm::lookAt(cameraPos,               // position
+                       cameraPos + cameraFront, // target
+                       cameraUp);               // up vector
+    model = glm::translate(model, loc);
     proj = glm::perspective(glm::radians(-45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
 
     shaderProgram->use();
