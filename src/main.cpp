@@ -12,6 +12,7 @@ int main(int, char **)
 
     while (game->Running())
     {
+        game->UpdateFrameTiming();
         game->HandleEvents();
         // game->Update();
         game->Render();

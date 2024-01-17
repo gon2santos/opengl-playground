@@ -28,6 +28,7 @@ public:
     void Setup();
     void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode);
     void GLMTransform(glm::vec3 loc, int ticks);
+    void UpdateFrameTiming();
     float vertexAttributes_plane[32] = {
         /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
         /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.0, 0.5, 0.0, /*txt*/ 1.0, 1.0,
@@ -121,10 +122,13 @@ public:
         glm::vec3(0.0f, 0.0f, 1.0f),
     };
 
+    float deltaTime = 0.0f; // Time between current frame and last frame
+    float lastFrame = 0.0f; // Time of last frame
+
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    const float cameraSpeed = 0.05f;
+    const float cameraSpeed = .02f;
 
 private:
     bool isRunning;

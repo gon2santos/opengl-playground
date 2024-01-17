@@ -62,19 +62,19 @@ void Game::HandleEvents()
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_UP)
         {
-            cameraPos += cameraSpeed * cameraFront;
+            cameraPos += cameraSpeed * deltaTime * cameraFront;
         }
         if (event.key.keysym.sym == SDLK_DOWN)
         {
-            cameraPos -= cameraSpeed * cameraFront;
+            cameraPos -= cameraSpeed * deltaTime * cameraFront;
         }
         if (event.key.keysym.sym == SDLK_LEFT)
         {
-            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
         }
         if (event.key.keysym.sym == SDLK_RIGHT)
         {
-            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
         }
         break;
     default:
@@ -88,7 +88,6 @@ void Game::Update()
 
 void Game::Render()
 {
-    int ticks = SDL_GetTicks();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // bind textures on corresponding texture units
@@ -100,7 +99,7 @@ void Game::Render()
     glBindVertexArray(VAO);
     for (int i = 0; i < 3; i++)
     {
-        GLMTransform(cubPos[i], ticks);
+        GLMTransform(cubPos[i], 1);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
@@ -167,9 +166,6 @@ void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum forma
 
 void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codigo transladar -> rotar -> escalar)
 {
-    const float radius = 10.0f;
-    float camX = sin((float)ticks / 1000) * radius;
-    float camZ = cos((float)ticks / 1000) * radius;
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 proj = glm::mat4(1.0f);
     glm::mat4 view;
@@ -187,6 +183,13 @@ void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codig
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+}
+
+void Game::UpdateFrameTiming()
+{
+    float currentFrame = SDL_GetTicks();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
 }
 
 void Game::Clean()
