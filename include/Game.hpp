@@ -130,6 +130,10 @@ public:
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     const float cameraSpeed = .02f;
 
+    float pitch = 0.0f;
+    float yaw = -90.0f;
+    float lookSensitivity = 2.f;
+
 private:
     bool isRunning;
     SDL_Window *window;
