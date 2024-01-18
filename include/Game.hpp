@@ -9,6 +9,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "Camera.hpp"
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400
@@ -125,14 +126,7 @@ public:
     float deltaTime = 0.0f; // Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
 
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    const float cameraSpeed = .02f;
-
-    float pitch = 0.0f;
-    float yaw = -90.0f;
-    float lookSensitivity = 2.f;
+    Camera *camera = nullptr;
 
 private:
     bool isRunning;

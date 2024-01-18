@@ -2,6 +2,7 @@
 
 Game::Game()
 {
+    camera = new Camera();
 }
 Game::~Game()
 {
@@ -62,59 +63,35 @@ void Game::HandleEvents()
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_w)
         {
-            cameraPos += cameraSpeed * deltaTime * cameraFront;
+            camera->Move(CAMERA_FORWARD, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_s)
         {
-            cameraPos -= cameraSpeed * deltaTime * cameraFront;
+            camera->Move(CAMERA_BACKWARD, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_a)
         {
-            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
+            camera->Move(CAMERA_LEFT, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_d)
         {
-            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
+            camera->Move(CAMERA_RIGHT, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_UP) // pitch up
         {
-            pitch -= 1 * lookSensitivity;
-            /* if (pitch > 89.0f)
-                pitch = 89.0f; */
-            glm::vec3 direction;
-            direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            direction.y = sin(glm::radians(pitch));
-            direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-            cameraFront = glm::normalize(direction);
+            camera->Look(CAMERA_LOOK_UP, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_DOWN) // pitch down
         {
-            pitch += 1 * lookSensitivity;
-            /* if (pitch < -89.0f)
-                pitch = -89.0f; */
-            glm::vec3 direction;
-            direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            direction.y = sin(glm::radians(pitch));
-            direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-            cameraFront = glm::normalize(direction);
+            camera->Look(CAMERA_LOOK_DOWN, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_LEFT) // yaw up
         {
-            yaw += 1 * lookSensitivity;
-            glm::vec3 direction;
-            direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            direction.y = sin(glm::radians(pitch));
-            direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-            cameraFront = glm::normalize(direction);
+            camera->Look(CAMERA_LOOK_LEFT, deltaTime);
         }
         if (event.key.keysym.sym == SDLK_RIGHT) // yaw down
         {
-            yaw -= 1 * lookSensitivity;
-            glm::vec3 direction;
-            direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            direction.y = sin(glm::radians(pitch));
-            direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-            cameraFront = glm::normalize(direction);
+            camera->Look(CAMERA_LOOK_RIGHT, deltaTime);
         }
         break;
     default:
@@ -209,9 +186,9 @@ void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codig
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 proj = glm::mat4(1.0f);
     glm::mat4 view;
-    view = glm::lookAt(cameraPos,               // position
-                       cameraPos + cameraFront, // target
-                       cameraUp);               // up vector
+    view = glm::lookAt(camera->cameraPos,                       // cameraPos(position)
+                       camera->cameraPos + camera->cameraFront, // cameraPos + cameraFront(direction)
+                       camera->cameraUp);                       // cameraUp(up vector)
     model = glm::translate(model, loc);
     proj = glm::perspective(glm::radians(-45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
 
