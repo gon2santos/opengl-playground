@@ -109,19 +109,21 @@ public:
 
     unsigned int VBO;
     unsigned int VAO;
-    unsigned int EBO;
+    unsigned int lightVAO;
+    // unsigned int EBO;
     unsigned int vertexShader;
     unsigned int fragmentShader;
     Shader *shaderProgram;
+    Shader *shaderProgramLight;
     float count = 0.0f;
     unsigned int texture0;
     unsigned int texture1;
 
-    glm::vec3 cubPos[3] = {
+    glm::vec3 cubPos[4] = {
         glm::vec3(1.0f, 0.0f, -1.0f),
         glm::vec3(-1.0f, 0.0f, -1.0f),
         glm::vec3(0.0f, 0.0f, 1.0f),
-    };
+        glm::vec3(0.0f, 2.0f, 1.0f)};
 
     float deltaTime = 0.0f; // Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame

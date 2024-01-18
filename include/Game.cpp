@@ -124,11 +124,22 @@ void Game::Render()
     glBindTexture(GL_TEXTURE_2D, texture1);
 
     glBindVertexArray(VAO);
-    for (int i = 0; i < 3; i++)
+    shaderProgram->use();
+    GLMTransform(cubPos[0], 1);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    GLMTransform(cubPos[1], 1);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    GLMTransform(cubPos[2], 1);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // glBindVertexArray(lightVAO);
+    shaderProgramLight->use();
+    GLMTransform(cubPos[3], 1);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    /* for (int i = 0; i < 3; i++)
     {
         GLMTransform(cubPos[i], 1);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
+    } */
 
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     SDL_GL_SwapWindow(window);
@@ -136,9 +147,10 @@ void Game::Render()
 
 void Game::Setup() // sets buffer objects and generates the shader program
 {
-    glGenBuffers(1, &EBO);
+    // guardar atributos de cubo texturado en VAO
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+    // glGenBuffers(1, &EBO); //remuevo el EBO por que no estoy usando indices para renderear los vertices
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // importante que se bindee despues del VAO!
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices_plane), vertexIndices_plane, GL_STATIC_DRAW);
     glGenBuffers(1, &VBO);
@@ -147,12 +159,34 @@ void Game::Setup() // sets buffer objects and generates the shader program
     shaderProgram = new Shader("./include/shaders/vertexShader.vert", "./include/shaders/fragmentShader.frag");
 
     // glVertexAttribPointer(indice, cant de componentes por atributo, tipo del componente, normalizado?, stride, offset)
+    // NOTA: glVertexAttribPointer guarda el/los VBO asociados a vertex atributes en el VAO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);                   // position attibute
     glEnableVertexAttribArray(0);                                                                    // habilitar este atributo (pos)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float))); // color attibute
     glEnableVertexAttribArray(1);                                                                    // habilitar este atributo (color)
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float))); // texture attibute
     glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
+
+    // guardar atributos de cubo luz en lightVAO, usa mismos atributos del cubo text asi que uso el mismo VBO
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    // glGenBuffers(1, &EBO); //remuevo el EBO por que no estoy usando indices para renderear los vertices
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // importante que se bindee despues del VAO!
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices_plane), vertexIndices_plane, GL_STATIC_DRAW);
+    // glGenBuffers(1, &VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertexAttributes_cube), vertexAttributes_cube, GL_STATIC_DRAW);
+    shaderProgramLight = new Shader("./include/shaders/vertexShader.vert", "./include/shaders/lightFragmentShader.frag");
+
+    // glVertexAttribPointer(indice, cant de componentes por atributo, tipo del componente, normalizado?, stride, offset)
+    // NOTA: glVertexAttribPointer guarda el/los VBO asociados a vertex atributes en el VAO
+
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);                   // position attibute
+    // glEnableVertexAttribArray(0);                                                                    // habilitar este atributo (pos)
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float))); // color attibute
+    // glEnableVertexAttribArray(1);                                                                    // habilitar este atributo (color)
+    // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float))); // texture attibute
+    // glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
 
     glEnable(GL_DEPTH_TEST);
 }
@@ -202,7 +236,7 @@ void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codig
     model = glm::translate(model, loc);
     proj = glm::perspective(glm::radians(camera->cameraZoom), 800.0f / 600.0f, 1.0f, 100.0f);
 
-    shaderProgram->use();
+    // shaderProgram->use();
     int modelLoc = glGetUniformLocation(shaderProgram->ID, "model");
     int viewLoc = glGetUniformLocation(shaderProgram->ID, "view");
     int projLoc = glGetUniformLocation(shaderProgram->ID, "proj");
