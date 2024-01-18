@@ -61,6 +61,16 @@ void Game::HandleEvents()
         isRunning = false;
         break;
     case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_m)
+        {
+            if (camera->cameraZoom < -1.0f)
+                camera->cameraZoom += .1f * deltaTime;
+        }
+        if (event.key.keysym.sym == SDLK_n)
+        {
+            if (camera->cameraZoom > -100.0f)
+                camera->cameraZoom -= .1f * deltaTime;
+        }
         if (event.key.keysym.sym == SDLK_w)
         {
             camera->Move(CAMERA_FORWARD, deltaTime);
@@ -190,7 +200,7 @@ void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codig
                        camera->cameraPos + camera->cameraFront, // cameraPos + cameraFront(direction)
                        camera->cameraUp);                       // cameraUp(up vector)
     model = glm::translate(model, loc);
-    proj = glm::perspective(glm::radians(-45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
+    proj = glm::perspective(glm::radians(camera->cameraZoom), 800.0f / 600.0f, 1.0f, 100.0f);
 
     shaderProgram->use();
     int modelLoc = glGetUniformLocation(shaderProgram->ID, "model");
