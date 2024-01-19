@@ -2,6 +2,9 @@
 
 Camera::Camera() {}
 Camera::~Camera() {}
+/// @brief Set moving direction of the camera
+/// @param dir the direction, use one of the defined directions in the header file
+/// @param deltaTime the deltatime of the program
 void Camera::Move(int dir, float deltaTime)
 {
     switch (dir)
@@ -20,6 +23,9 @@ void Camera::Move(int dir, float deltaTime)
         break;
     }
 }
+/// @brief Set looking direction of the camera
+/// @param dir the direction, use one of the defined directions in the header file
+/// @param deltaTime the deltatime of the program
 void Camera::Look(int dir, float deltaTime)
 {
     switch (dir)

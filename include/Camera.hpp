@@ -17,10 +17,14 @@
 class Camera
 {
 public:
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraPos = glm::vec3(-0.584592f, 1.51415f, 3.3521f);
+    glm::vec3 cameraFront = glm::vec3(0.439877f, -0.372988f, -0.816938f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     float cameraZoom = 45.0f;
+    const float cameraSpeed = .02f;
+    float pitch = -21.9f;
+    float yaw = -61.7f;
+    float lookSensitivity = 0.1f;
     Camera();
     ~Camera();
     void Move(int dir, float deltaTime);
@@ -28,10 +32,6 @@ public:
     glm::mat4 GetViewMatrix();
 
 private:
-    const float cameraSpeed = .02f;
-    float pitch = 0.0f;
-    float yaw = -90.0f;
-    float lookSensitivity = 0.1f;
 };
 
 #endif

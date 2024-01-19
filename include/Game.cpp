@@ -61,6 +61,9 @@ void Game::HandleEvents()
         isRunning = false;
         break;
     case SDL_KEYDOWN:
+        // LogCameraPosition();
+        if (event.key.keysym.sym == SDLK_ESCAPE)
+            isRunning = false;
         if (event.key.keysym.sym == SDLK_n)
         {
             std::cout << camera->cameraZoom << std::endl;
@@ -121,7 +124,7 @@ void Game::Render()
 
     lightingShader->use();
     lightingShader->setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-    lightingShader->setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    lightingShader->setVec3("lightColor", lightColor);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera->cameraZoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
@@ -140,6 +143,7 @@ void Game::Render()
 
     // render de lightcube
     lightCubeShader->use();
+    lightCubeShader->setVec3("lightColor", lightColor);
     lightCubeShader->setMat4("projection", glm::value_ptr(projection));
     lightCubeShader->setMat4("view", glm::value_ptr(view));
     model = glm::mat4(1.0f);
@@ -189,6 +193,26 @@ void Game::UpdateFrameTiming()
     float currentFrame = SDL_GetTicks();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
+}
+
+void Game::LogCameraPosition()
+{
+    std::cout << "cameraFront: " << camera->cameraFront.x << ","
+              << camera->cameraFront.y << ","
+              << camera->cameraFront.z << ","
+              << std::endl;
+    std::cout << "cameraPos: " << camera->cameraPos.x << ","
+              << camera->cameraPos.y << ","
+              << camera->cameraPos.z << ","
+              << std::endl;
+    std::cout << "cameraUp: " << camera->cameraUp.x << ","
+              << camera->cameraUp.y << ","
+              << camera->cameraUp.z << ","
+              << std::endl;
+    std::cout << "pitch: " << camera->pitch
+              << std::endl;
+    std::cout << "yaw: " << camera->yaw
+              << std::endl;
 }
 
 void Game::Clean()

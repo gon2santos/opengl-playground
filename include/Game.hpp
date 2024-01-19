@@ -29,6 +29,7 @@ public:
     void SDLDie(const char *msg);
     void Setup();
     void UpdateFrameTiming();
+    void LogCameraPosition();
 
     unsigned int VBO, cubeVAO, lightCubeVAO;
     // unsigned int EBO;
@@ -47,6 +48,8 @@ public:
     float lastFrame = 0.0f; // Time of last frame
 
     Camera *camera = nullptr;
+
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 private:
     bool isRunning;
