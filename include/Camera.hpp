@@ -25,6 +25,7 @@ public:
     ~Camera();
     void Move(int dir, float deltaTime);
     void Look(int dir, float deltaTime);
+    glm::mat4 GetViewMatrix();
 
 private:
     const float cameraSpeed = .02f;

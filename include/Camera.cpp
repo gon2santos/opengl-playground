@@ -66,3 +66,13 @@ void Camera::Look(int dir, float deltaTime)
     }
     }
 }
+/// @brief returns view matrix as currently configured by camera parameters cameraPos, cameraFront and cameraUp
+/// @return glm::mat4 view matrix
+glm::mat4 Camera::GetViewMatrix()
+{
+    glm::mat4 viewMatrix;
+    viewMatrix = glm::lookAt(cameraPos,               // cameraPos(position)
+                             cameraPos + cameraFront, // cameraPos + cameraFront(direction)
+                             cameraUp);               // cameraUp(up vector)
+    return viewMatrix;
+}

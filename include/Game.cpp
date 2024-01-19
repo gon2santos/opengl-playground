@@ -61,14 +61,16 @@ void Game::HandleEvents()
         isRunning = false;
         break;
     case SDL_KEYDOWN:
-        if (event.key.keysym.sym == SDLK_m)
-        {
-            if (camera->cameraZoom < -1.0f)
-                camera->cameraZoom += .1f * deltaTime;
-        }
         if (event.key.keysym.sym == SDLK_n)
         {
-            if (camera->cameraZoom > -100.0f)
+            std::cout << camera->cameraZoom << std::endl;
+            if (camera->cameraZoom < 100.0f)
+                camera->cameraZoom += .1f * deltaTime;
+        }
+        if (event.key.keysym.sym == SDLK_m)
+        {
+            std::cout << camera->cameraZoom << std::endl;
+            if (camera->cameraZoom > 1.0f)
                 camera->cameraZoom -= .1f * deltaTime;
         }
         if (event.key.keysym.sym == SDLK_w)
@@ -117,133 +119,69 @@ void Game::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // bind textures on corresponding texture units
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture0);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    lightingShader->use();
+    lightingShader->setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+    lightingShader->setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
-    glBindVertexArray(VAO);
-    shaderProgram->use();
-    GLMTransform(cubPos[0], 1);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    GLMTransform(cubPos[1], 1);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    GLMTransform(cubPos[2], 1);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    // glBindVertexArray(lightVAO);
-    shaderProgramLight->use();
-    GLMTransform(cubPos[3], 1);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    /* for (int i = 0; i < 3; i++)
-    {
-        GLMTransform(cubPos[i], 1);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    } */
+    // view/projection transformations
+    glm::mat4 projection = glm::perspective(glm::radians(camera->cameraZoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view;
+    view = camera->GetViewMatrix();
+    lightingShader->setMat4("projection", glm::value_ptr(projection));
+    lightingShader->setMat4("view", glm::value_ptr(view));
 
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // world transformation
+    glm::mat4 model = glm::mat4(1.0f);
+    lightingShader->setMat4("model", glm::value_ptr(model));
+
+    // render the cube
+    glBindVertexArray(cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // render de lightcube
+    lightCubeShader->use();
+    lightCubeShader->setMat4("projection", glm::value_ptr(projection));
+    lightCubeShader->setMat4("view", glm::value_ptr(view));
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, lightPos);
+    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+    lightCubeShader->setMat4("model", glm::value_ptr(model));
+
+    glBindVertexArray(lightCubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
     SDL_GL_SwapWindow(window);
 }
 
-void Game::Setup() // sets buffer objects and generates the shader program
+/// @brief sets buffer objects and generates the shader program
+void Game::Setup()
 {
-    // guardar atributos de cubo texturado en VAO
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    // glGenBuffers(1, &EBO); //remuevo el EBO por que no estoy usando indices para renderear los vertices
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // importante que se bindee despues del VAO!
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices_plane), vertexIndices_plane, GL_STATIC_DRAW);
+    lightingShader = new Shader("./include/shaders/colors.vert", "./include/shaders/colors.frag");
+    lightCubeShader = new Shader("./include/shaders/light_cube.vert", "./include/shaders/light_cube.frag");
+
+    // configure the cube's VAO (and VBO)
+    glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexAttributes_cube), vertexAttributes_cube, GL_STATIC_DRAW);
-    shaderProgram = new Shader("./include/shaders/vertexShader.vert", "./include/shaders/fragmentShader.frag");
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
 
-    // glVertexAttribPointer(indice, cant de componentes por atributo, tipo del componente, normalizado?, stride, offset)
-    // NOTA: glVertexAttribPointer guarda el/los VBO asociados a vertex atributes en el VAO
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);                   // position attibute
-    glEnableVertexAttribArray(0);                                                                    // habilitar este atributo (pos)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float))); // color attibute
-    glEnableVertexAttribArray(1);                                                                    // habilitar este atributo (color)
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float))); // texture attibute
-    glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
+    glBindVertexArray(cubeVAO);
 
-    // guardar atributos de cubo luz en lightVAO, usa mismos atributos del cubo text asi que uso el mismo VBO
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    // glGenBuffers(1, &EBO); //remuevo el EBO por que no estoy usando indices para renderear los vertices
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // importante que se bindee despues del VAO!
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices_plane), vertexIndices_plane, GL_STATIC_DRAW);
-    // glGenBuffers(1, &VBO);
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertexAttributes_cube), vertexAttributes_cube, GL_STATIC_DRAW);
-    shaderProgramLight = new Shader("./include/shaders/vertexShader.vert", "./include/shaders/lightFragmentShader.frag");
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
-    // glVertexAttribPointer(indice, cant de componentes por atributo, tipo del componente, normalizado?, stride, offset)
-    // NOTA: glVertexAttribPointer guarda el/los VBO asociados a vertex atributes en el VAO
+    // configure the lightcube's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
 
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);                   // position attibute
-    // glEnableVertexAttribArray(0);                                                                    // habilitar este atributo (pos)
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float))); // color attibute
-    // glEnableVertexAttribArray(1);                                                                    // habilitar este atributo (color)
-    // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float))); // texture attibute
-    // glEnableVertexAttribArray(2);                                                                    // habilitar este atributo (texture)
+    // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
     glEnable(GL_DEPTH_TEST);
-}
-
-void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode)
-{
-    int width, height, nrChannels;
-
-    glGenTextures(1, texture);
-    glBindTexture(GL_TEXTURE_2D, *texture);
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode); // GL_REPEAT
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR
-    stbi_set_flip_vertically_on_load(true);                            // set flip loaded image on the y-axis
-    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "LoadTexture: Failed to load image data." << std::endl;
-    }
-    stbi_image_free(data);
-
-    std::ostringstream oss;
-    oss << "texture" << textureIndex;
-    std::string textureName = oss.str();
-
-    shaderProgram->use();
-    shaderProgram->setInt(textureName, textureIndex);
-    std::cout << "set " + textureName + " unit" << std::endl;
-}
-
-void Game::GLMTransform(glm::vec3 loc, int ticks) // transformar (orden en codigo transladar -> rotar -> escalar)
-{
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 proj = glm::mat4(1.0f);
-    glm::mat4 view;
-    view = glm::lookAt(camera->cameraPos,                       // cameraPos(position)
-                       camera->cameraPos + camera->cameraFront, // cameraPos + cameraFront(direction)
-                       camera->cameraUp);                       // cameraUp(up vector)
-    model = glm::translate(model, loc);
-    proj = glm::perspective(glm::radians(camera->cameraZoom), 800.0f / 600.0f, 1.0f, 100.0f);
-
-    // shaderProgram->use();
-    int modelLoc = glGetUniformLocation(shaderProgram->ID, "model");
-    int viewLoc = glGetUniformLocation(shaderProgram->ID, "view");
-    int projLoc = glGetUniformLocation(shaderProgram->ID, "proj");
-
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 }
 
 void Game::UpdateFrameTiming()
@@ -255,6 +193,9 @@ void Game::UpdateFrameTiming()
 
 void Game::Clean()
 {
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteVertexArrays(1, &lightCubeVAO);
+    glDeleteBuffers(1, &VBO);
     SDL_GL_DeleteContext(maincontext);
     SDL_DestroyWindow(window);
     window = NULL;

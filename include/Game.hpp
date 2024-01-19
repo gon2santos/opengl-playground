@@ -10,6 +10,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "Camera.hpp"
+#include "assets/models.hpp"
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400
@@ -27,103 +28,20 @@ public:
     bool Running() { return isRunning; };
     void SDLDie(const char *msg);
     void Setup();
-    void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode);
-    void GLMTransform(glm::vec3 loc, int ticks);
     void UpdateFrameTiming();
-    float vertexAttributes_plane[32] = {
-        /*pos*/ -0.5, 0.5, 0.0, /*clr*/ 0.5, 0.0, 0.0, /*txt*/ 0.0, 1.0,
-        /*pos*/ 0.5, 0.5, 0.0, /*clr*/ 0.0, 0.5, 0.0, /*txt*/ 1.0, 1.0,
-        /*pos*/ -0.5, -0.5, 0.0, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0, 0.0,
-        /*pos*/ 0.5, -0.5, 0.0, /*clr*/ 0.3, 0.0, 0.3, /*txt*/ 1.0, 0.0};
 
-    float vertexAttributes_cube[288] = {
-        /*pos*/ -0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-        /*pos*/ 0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ 0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ 0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ -0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ -0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-
-        /*pos*/ -0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-        /*pos*/ 0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ 0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ 0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ -0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ -0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-
-        /*pos*/ -0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ -0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ -0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ -0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ -0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-        /*pos*/ -0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-
-        /*pos*/ 0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ 0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ 0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ 0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ 0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-        /*pos*/ 0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-
-        /*pos*/ -0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ 0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ 0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ 0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ -0.5f, -0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-        /*pos*/ -0.5f, -0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-
-        /*pos*/ -0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f,
-        /*pos*/ 0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 1.0f,
-        /*pos*/ 0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ 0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 1.0f, 0.0f,
-        /*pos*/ -0.5f, 0.5f, 0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 0.0f,
-        /*pos*/ -0.5f, 0.5f, -0.5f, /*clr*/ 0.0, 0.0, 0.5, /*txt*/ 0.0f, 1.0f};
-
-    int vertexIndices_plane[6] = {
-        0, 1, 2, 1, 2, 3};
-    // Normalized device coordinates
-    //                   | 1
-    //                   |
-    //  (-0.5, 0.5)      |       (0.5, 0.5)
-    //         0         |          1
-    //                   |
-    //                   |
-    //                   |
-    //-1 -------------------------------- 1
-    //                   |
-    //                   |
-    //                   |
-    //         2         |          3
-    //  (-0.5, -0.5)     |       (0.5, -0.5)
-    //                   |
-    //                   | -1
-
-    // texture coordinates
-    // |(0.0, 0.1)      (1.0, 1.0)
-    // |+----------------+
-    // ||    |      |    |
-    // ||       --       |
-    // ||  \__________/  |
-    // |+----------------+__________
-    //  (0.0, 0.0)      (1.0, 0.0)
-
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int lightVAO;
+    unsigned int VBO, cubeVAO, lightCubeVAO;
     // unsigned int EBO;
     unsigned int vertexShader;
     unsigned int fragmentShader;
-    Shader *shaderProgram;
-    Shader *shaderProgramLight;
+    Shader *lightingShader;
+    Shader *lightCubeShader;
     float count = 0.0f;
     unsigned int texture0;
     unsigned int texture1;
 
-    glm::vec3 cubPos[4] = {
-        glm::vec3(1.0f, 0.0f, -1.0f),
-        glm::vec3(-1.0f, 0.0f, -1.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f),
-        glm::vec3(0.0f, 2.0f, 1.0f)};
+    glm::vec3 cubPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
     float deltaTime = 0.0f; // Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
