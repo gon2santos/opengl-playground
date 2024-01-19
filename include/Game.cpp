@@ -122,34 +122,34 @@ void Game::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    lightingShader->use();
-    lightingShader->setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-    lightingShader->setVec3("lightColor", lightColor);
+    objectShader->use();
+    objectShader->setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+    objectShader->setVec3("lightColor", lightColor);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera->cameraZoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view;
     view = camera->GetViewMatrix();
-    lightingShader->setMat4("projection", glm::value_ptr(projection));
-    lightingShader->setMat4("view", glm::value_ptr(view));
+    objectShader->setMat4("projection", glm::value_ptr(projection));
+    objectShader->setMat4("view", glm::value_ptr(view));
 
     // world transformation
     glm::mat4 model = glm::mat4(1.0f);
-    lightingShader->setMat4("model", glm::value_ptr(model));
+    objectShader->setMat4("model", glm::value_ptr(model));
 
     // render the cube
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     // render de lightcube
-    lightCubeShader->use();
-    lightCubeShader->setVec3("lightColor", lightColor);
-    lightCubeShader->setMat4("projection", glm::value_ptr(projection));
-    lightCubeShader->setMat4("view", glm::value_ptr(view));
+    lampShader->use();
+    lampShader->setVec3("lightColor", lightColor);
+    lampShader->setMat4("projection", glm::value_ptr(projection));
+    lampShader->setMat4("view", glm::value_ptr(view));
     model = glm::mat4(1.0f);
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    lightCubeShader->setMat4("model", glm::value_ptr(model));
+    lampShader->setMat4("model", glm::value_ptr(model));
 
     glBindVertexArray(lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -160,8 +160,11 @@ void Game::Render()
 /// @brief sets buffer objects and generates the shader program
 void Game::Setup()
 {
-    lightingShader = new Shader("./include/shaders/colors.vert", "./include/shaders/colors.frag");
-    lightCubeShader = new Shader("./include/shaders/light_cube.vert", "./include/shaders/light_cube.frag");
+    objectShader = new Shader("./include/shaders/colors.vert", "./include/shaders/colors.frag");
+    lampShader = new Shader("./include/shaders/light_cube.vert", "./include/shaders/light_cube.frag");
+
+    objectShader->use();
+    objectShader->setVec3("lightPos", lightPos);
 
     // configure the cube's VAO (and VBO)
     glGenVertexArrays(1, &cubeVAO);
@@ -173,8 +176,10 @@ void Game::Setup()
     glBindVertexArray(cubeVAO);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0); // pos
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float))); // normales
+    glEnableVertexAttribArray(1);
 
     // configure the lightcube's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
     glGenVertexArrays(1, &lightCubeVAO);
@@ -182,7 +187,7 @@ void Game::Setup()
 
     // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0); // pos
     glEnableVertexAttribArray(0);
 
     glEnable(GL_DEPTH_TEST);

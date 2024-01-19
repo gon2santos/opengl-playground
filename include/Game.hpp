@@ -35,8 +35,8 @@ public:
     // unsigned int EBO;
     unsigned int vertexShader;
     unsigned int fragmentShader;
-    Shader *lightingShader;
-    Shader *lightCubeShader;
+    Shader *objectShader;
+    Shader *lampShader;
     float count = 0.0f;
     unsigned int texture0;
     unsigned int texture1;
