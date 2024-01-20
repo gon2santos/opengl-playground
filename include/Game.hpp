@@ -42,7 +42,7 @@ public:
     unsigned int texture1;
 
     glm::vec3 cubPos = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
+    glm::vec3 lightPos = glm::vec3(0.f, 1.0f, 0.f);
 
     float deltaTime = 0.0f; // Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame

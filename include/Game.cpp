@@ -126,6 +126,8 @@ void Game::Render()
     objectShader->setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
     objectShader->setVec3("lightColor", lightColor);
     objectShader->setVec3("viewPos", camera->cameraPos);
+    lightPos = glm::vec3(cos(lastFrame / 1000) * 2.f, 1.0f, sin(lastFrame / 1000) * 2.f);
+    objectShader->setVec3("lightPos", lightPos);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera->cameraZoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
@@ -142,7 +144,7 @@ void Game::Render()
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    // render de lightcube
+    // render de lamp
     lampShader->use();
     lampShader->setVec3("lightColor", lightColor);
     lampShader->setMat4("projection", glm::value_ptr(projection));
@@ -163,9 +165,6 @@ void Game::Setup()
 {
     objectShader = new Shader("./include/shaders/colors.vert", "./include/shaders/colors.frag");
     lampShader = new Shader("./include/shaders/light_cube.vert", "./include/shaders/light_cube.frag");
-
-    objectShader->use();
-    objectShader->setVec3("lightPos", lightPos);
 
     // configure the cube's VAO (and VBO)
     glGenVertexArrays(1, &cubeVAO);

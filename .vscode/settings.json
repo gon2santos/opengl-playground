@@ -50,6 +50,10 @@
         "sstream": "cpp",
         "cstring": "cpp",
         "ctime": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "format": "cpp",
+        "mutex": "cpp"
     }
 }
