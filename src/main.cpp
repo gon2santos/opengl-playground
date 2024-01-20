@@ -8,6 +8,7 @@ int main(int, char **)
     game->Setup();
 
     game->Loadtexture(&game->texture0, "./include/assets/container2.png", GL_RGBA, 0, GL_CLAMP_TO_EDGE);
+    game->Loadtexture(&game->texture1, "./include/assets/container2_specular.png", GL_RGBA, 1, GL_CLAMP_TO_EDGE);
 
     while (game->Running())
     {
