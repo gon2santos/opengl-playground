@@ -7,6 +7,8 @@ int main(int, char **)
     game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
     game->Setup();
 
+    game->Loadtexture(&game->texture0, "./include/assets/container2.png", GL_RGBA, 0, GL_CLAMP_TO_EDGE);
+
     while (game->Running())
     {
         game->UpdateFrameTiming();

@@ -122,6 +122,9 @@ void Game::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture0);
+
     objectShader->use();
     objectShader->setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
     objectShader->setVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
@@ -178,15 +181,17 @@ void Game::Setup()
     glGenBuffers(1, &VBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_textured_normals), cube_textured_normals, GL_STATIC_DRAW);
 
     glBindVertexArray(cubeVAO);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0); // pos
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0); // pos
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float))); // normales
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float))); // text
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(5 * sizeof(float))); // norm
+    glEnableVertexAttribArray(2);
 
     // configure the lightcube's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
     glGenVertexArrays(1, &lightCubeVAO);
@@ -194,7 +199,7 @@ void Game::Setup()
 
     // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0); // pos
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0); // pos
     glEnableVertexAttribArray(0);
 
     glEnable(GL_DEPTH_TEST);
@@ -225,6 +230,40 @@ void Game::LogCameraPosition()
               << std::endl;
     std::cout << "yaw: " << camera->yaw
               << std::endl;
+}
+
+void Game::Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode)
+{
+    int width, height, nrChannels;
+
+    glGenTextures(1, texture);
+    glBindTexture(GL_TEXTURE_2D, *texture);
+
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode); // GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR
+    stbi_set_flip_vertically_on_load(true);                            // set flip loaded image on the y-axis
+    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "LoadTexture: Failed to load image data." << std::endl;
+    }
+    stbi_image_free(data);
+
+    std::ostringstream oss;
+    oss << "material.texture" << textureIndex;
+    std::string textureName = oss.str();
+
+    objectShader->use();
+    objectShader->setInt(textureName, textureIndex);
+    std::cout << "set " + textureName + " unit" << std::endl;
 }
 
 void Game::Clean()

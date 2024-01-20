@@ -31,6 +31,8 @@ public:
     void UpdateFrameTiming();
     void LogCameraPosition();
 
+    void Loadtexture(unsigned int *texture, const char *filename, GLenum format, unsigned int textureIndex, GLint mode);
+
     unsigned int VBO, cubeVAO, lightCubeVAO;
     // unsigned int EBO;
     unsigned int vertexShader;
