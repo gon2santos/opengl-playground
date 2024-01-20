@@ -126,6 +126,8 @@ void Game::Render()
     glBindTexture(GL_TEXTURE_2D, texture0);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
 
     objectShader->use();
     objectShader->setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));

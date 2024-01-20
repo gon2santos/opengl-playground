@@ -42,6 +42,7 @@ public:
     float count = 0.0f;
     unsigned int texture0;
     unsigned int texture1;
+    unsigned int texture2;
 
     glm::vec3 cubPos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 lightPos = glm::vec3(0.f, 1.0f, 0.f);
