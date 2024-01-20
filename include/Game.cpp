@@ -123,8 +123,15 @@ void Game::Render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     objectShader->use();
-    objectShader->setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-    objectShader->setVec3("lightColor", lightColor);
+    objectShader->setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+    objectShader->setVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+    objectShader->setVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    objectShader->setFloat("material.shininess", 32.0f);
+
+    objectShader->setVec3("light.ambient", glm::vec3(0.2f));
+    objectShader->setVec3("light.diffuse", glm::vec3(0.5f)); // darken diffuse light a bit
+    objectShader->setVec3("light.specular", glm::vec3(1.0f));
+
     objectShader->setVec3("viewPos", camera->cameraPos);
     lightPos = glm::vec3(cos(lastFrame / 1000) * 2.f, 1.0f, sin(lastFrame / 1000) * 2.f);
     objectShader->setVec3("lightPos", lightPos);
