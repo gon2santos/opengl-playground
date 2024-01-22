@@ -30,18 +30,17 @@ void main()
     //emission
     vec3 emission=vec3(texture(material.texture_emission1,TexCoords));
     // ambient
-    vec3 ambient=light.ambient*vec3(texture(material.texture_diffuse1,TexCoords));
+    vec3 ambient=light.ambient*texture(material.texture_diffuse1,TexCoords).rgb;
     // diffuse
-    //vec3 norm=normalize(Normal);
-    vec3 norm=vec3(texture(material.texture_normal1,TexCoords));
+    vec3 norm=normalize(Normal);
     vec3 lightDir=normalize(light.position-FragPos);
     float diff=max(dot(norm,lightDir),0.);
-    vec3 diffuse=light.diffuse*diff*vec3(texture(material.texture_diffuse1,TexCoords));
+    vec3 diffuse=light.diffuse*diff*texture(material.texture_diffuse1,TexCoords).rgb;
     // specular
     vec3 viewDir=normalize(viewPos-FragPos);
     vec3 reflectDir=reflect(-lightDir,norm);
-    float spec=pow(max(dot(viewDir,reflectDir),0.),3);//32 == material.shininess
-    vec3 specular=light.specular*(spec*vec3(texture(material.texture_specular1,TexCoords)));
+    float spec=pow(max(dot(viewDir,reflectDir),0.),32);//32==material.shininess
+    vec3 specular=light.specular*spec*texture(material.texture_specular1,TexCoords).rgb;
     
     vec3 result=ambient+diffuse+specular;//+emission
     FragColor=vec4(result,1.);//arreglar specular, no esta funcando bien
