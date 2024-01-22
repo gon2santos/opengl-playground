@@ -138,6 +138,15 @@ void Game::Render()
     objectShader->setMat4("projection", glm::value_ptr(projection));
     objectShader->setMat4("view", glm::value_ptr(view));
 
+    // light
+    objectShader->setVec3("light.ambient", glm::vec3(.3f));
+    objectShader->setVec3("light.diffuse", glm::vec3(0.7f));
+    objectShader->setVec3("light.specular", glm::vec3(.2f));
+
+    objectShader->setVec3("viewPos", camera->cameraPos);
+    lightPos = glm::vec3(cos(lastFrame / 1000) * 2.f, 1.0f, sin(lastFrame / 1000) * 2.f);
+    objectShader->setVec3("light.position", lightPos);
+
     // render the loaded model
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
@@ -158,6 +167,7 @@ void Game::Setup()
     // load models
     modelOne = new Model("./include/assets/objects/backpack/backpack.obj");
     std::cout << "Loading... OK! (" << (SDL_GetTicks() - count) << "ms)" << std::endl;
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Game::UpdateFrameTiming()
