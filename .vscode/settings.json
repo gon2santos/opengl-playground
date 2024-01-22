@@ -54,6 +54,9 @@
         "chrono": "cpp",
         "condition_variable": "cpp",
         "format": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "codecvt": "cpp",
+        "unordered_set": "cpp",
+        "ratio": "cpp"
     }
 }
