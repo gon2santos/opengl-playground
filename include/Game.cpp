@@ -154,13 +154,29 @@ void Game::Render()
     modelOne->Draw(*objectShader);
 
     ////-------------------------second pass: bind default framebuffer--------------------
+    // full quad
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    // glClear(GL_COLOR_BUFFER_BIT);
 
-    fbShader->use();
     glBindVertexArray(quadVAO);
+    int transformLocation = glGetUniformLocation(fbShader->ID, "transform"); // agregar el uniform transofrm al shader
+    glm::mat4 trans = glm::mat4(1.0f);
+    // trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+    //  trans = glm::rotate(trans, (glm::radians((float)SDL_GetTicks() / 100)), glm::vec3(0.0f, 0.0f, 1.0f));
+    // trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+    fbShader->use();
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
     glDisable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, fbTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    // small quad
+    trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+    // trans = glm::rotate(trans, (glm::radians((float)SDL_GetTicks() / 100)), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+    fbShader->use();
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
     glBindTexture(GL_TEXTURE_2D, fbTexture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     SDL_GL_SwapWindow(window);
