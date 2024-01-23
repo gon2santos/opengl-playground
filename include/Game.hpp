@@ -10,6 +10,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
+// #include "assets/models.hpp"
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400
@@ -29,8 +30,10 @@ public:
     void Setup();
     void UpdateFrameTiming();
     void LogCameraPosition();
+    void GenTxtFramebuffer();
 
     Shader *objectShader = nullptr;
+    Shader *fbShader = nullptr;
     Model *modelOne;
     float count = 0.0f;
 
@@ -39,7 +42,23 @@ public:
 
     glm::vec3 lightPos = glm::vec3(0.f, 1.0f, 0.f);
 
+    unsigned int fbo;       // framebuffer obj
+    unsigned int rbo;       // renderbuffer obj for stencil and depth buffering
+    unsigned int fbTexture; // framebuffer texture for color buffering
+    // para renderear el quad
+    unsigned int quadVAO, quadVBO;
+
     Camera *camera = nullptr;
+
+    float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 1.0f};
 
 private:
     bool isRunning;
