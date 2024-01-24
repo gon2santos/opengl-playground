@@ -153,30 +153,11 @@ void Game::Render()
     objectShader->setMat4("model", glm::value_ptr(model));
     modelOne->Draw(*objectShader);
 
-    ////-------------------------second pass: bind default framebuffer--------------------
-    // full quad
+    ////-------------------------second pass: bind default framebuffer and draw textured quad--------------------
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
-
     glBindVertexArray(quadVAO);
-    int transformLocation = glGetUniformLocation(fbShader->ID, "transform"); // agregar el uniform transofrm al shader
-    glm::mat4 trans = glm::mat4(1.0f);
-    // trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
-    //  trans = glm::rotate(trans, (glm::radians((float)SDL_GetTicks() / 100)), glm::vec3(0.0f, 0.0f, 1.0f));
-    // trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
     fbShader->use();
-    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
     glDisable(GL_DEPTH_TEST);
-    glBindTexture(GL_TEXTURE_2D, fbTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    // small quad
-    trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
-    // trans = glm::rotate(trans, (glm::radians((float)SDL_GetTicks() / 100)), glm::vec3(0.0f, 0.0f, 1.0f));
-    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
-    fbShader->use();
-    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
     glBindTexture(GL_TEXTURE_2D, fbTexture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     SDL_GL_SwapWindow(window);
@@ -262,6 +243,25 @@ void Game::GenTxtFramebuffer()
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Game::GenCubeMap()
+{
+    glGenTextures(1, &cmtexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture);
+    // load images
+    int width, height, nChannels;
+    unsigned char *data;
+    for (int i = 0; i < 6; i++)
+    {
+        data = stbi_load(texture_faces[i].c_str(), &width, &height, &nChannels, 0);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
 void Game::Clean()

@@ -31,6 +31,7 @@ public:
     void UpdateFrameTiming();
     void LogCameraPosition();
     void GenTxtFramebuffer();
+    void GenCubeMap();
 
     Shader *objectShader = nullptr;
     Shader *fbShader = nullptr;
@@ -47,6 +48,16 @@ public:
     unsigned int fbTexture; // framebuffer texture for color buffering
     // para renderear el quad
     unsigned int quadVAO, quadVBO;
+    // cube map
+    unsigned int cmtexture;
+
+    std::string texture_faces[6] = {
+        "./include/assets/skybox/right.jpg",
+        "./include/assets/skybox/left.jpg",
+        "./include/assets/skybox/top.jpg",
+        "./include/assets/skybox/bottom.jpg",
+        "./include/assets/skybox/back.jpg",
+        "./include/assets/skybox/front.jpg"};
 
     Camera *camera = nullptr;
 
