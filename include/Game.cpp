@@ -49,8 +49,6 @@ void Game::Init(const char *title, int xpos, int ypos, int width, int height, bo
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         std::cout << "Failed to initialize GLAD" << std::endl;
 
-    stbi_set_flip_vertically_on_load(true);
-
     glEnable(GL_DEPTH_TEST);
 
     glViewport(0, 0, 800, 600);
@@ -133,10 +131,21 @@ void Game::Render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // no stencil buffer
     glEnable(GL_DEPTH_TEST);
     //-------------------------draw scene in this framebuffer-----------------------------------
-    objectShader->use();
-    // view/projection transformations
+    // general view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera->cameraZoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 cmview = glm::mat4(glm::mat3(camera->GetViewMatrix()));
     glm::mat4 view = camera->GetViewMatrix();
+    // draw skybox first
+    glDepthMask(GL_FALSE);
+    cmShader->use();
+    cmShader->setMat4("projection", glm::value_ptr(projection));
+    cmShader->setMat4("view", glm::value_ptr(cmview));
+    glBindVertexArray(cmVAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDepthMask(GL_TRUE);
+    // draw scene inside second
+    objectShader->use();
     objectShader->setMat4("projection", glm::value_ptr(projection));
     objectShader->setMat4("view", glm::value_ptr(view));
     // light
@@ -177,8 +186,18 @@ void Game::Setup()
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     fbShader = new Shader("./include/shaders/fb.vert", "./include/shaders/fb.frag");
+    cmShader = new Shader("./include/shaders/cubemap.vert", "./include/shaders/cubemap.frag");
 
-    // define quad
+    // define cubemap
+    glGenVertexArrays(1, &cmVAO);
+    glGenBuffers(1, &cmVBO);
+    glBindVertexArray(cmVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cmVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+
+    // define framebuffer quad
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
     glBindVertexArray(quadVAO);
@@ -245,23 +264,36 @@ void Game::GenTxtFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Game::GenCubeMap()
+unsigned int Game::GenCubeMap(vector<std::string> faces)
 {
-    glGenTextures(1, &cmtexture);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture);
-    // load images
-    int width, height, nChannels;
-    unsigned char *data;
-    for (int i = 0; i < 6; i++)
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
     {
-        data = stbi_load(texture_faces[i].c_str(), &width, &height, &nChannels, 0);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        stbi_set_flip_vertically_on_load(false);
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
     }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
 
 void Game::Clean()

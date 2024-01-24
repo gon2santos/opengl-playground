@@ -7,7 +7,7 @@ int main(int, char **)
     game->Init("CHIP-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
     game->Setup();
     game->GenTxtFramebuffer();
-    game->GenCubeMap();
+    game->cmtexture = game->GenCubeMap(game->texture_faces);
     while (game->Running())
     {
         game->UpdateFrameTiming();

@@ -10,7 +10,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
-// #include "assets/models.hpp"
+#include "assets/models.hpp"
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400
@@ -31,10 +31,11 @@ public:
     void UpdateFrameTiming();
     void LogCameraPosition();
     void GenTxtFramebuffer();
-    void GenCubeMap();
+    unsigned int GenCubeMap(vector<std::string> faces);
 
     Shader *objectShader = nullptr;
     Shader *fbShader = nullptr;
+    Shader *cmShader = nullptr;
     Model *modelOne;
     float count = 0.0f;
 
@@ -46,18 +47,19 @@ public:
     unsigned int fbo;       // framebuffer obj
     unsigned int rbo;       // renderbuffer obj for stencil and depth buffering
     unsigned int fbTexture; // framebuffer texture for color buffering
-    // para renderear el quad
+    // framebuffer quad
     unsigned int quadVAO, quadVBO;
     // cube map
+    unsigned int cmVAO, cmVBO;
     unsigned int cmtexture;
 
-    std::string texture_faces[6] = {
+    vector<std::string> texture_faces = {
         "./include/assets/skybox/right.jpg",
         "./include/assets/skybox/left.jpg",
         "./include/assets/skybox/top.jpg",
         "./include/assets/skybox/bottom.jpg",
-        "./include/assets/skybox/back.jpg",
-        "./include/assets/skybox/front.jpg"};
+        "./include/assets/skybox/front.jpg",
+        "./include/assets/skybox/back.jpg"};
 
     Camera *camera = nullptr;
 
