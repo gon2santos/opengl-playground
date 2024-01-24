@@ -135,16 +135,7 @@ void Game::Render()
     glm::mat4 projection = glm::perspective(glm::radians(camera->cameraZoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
     glm::mat4 cmview = glm::mat4(glm::mat3(camera->GetViewMatrix()));
     glm::mat4 view = camera->GetViewMatrix();
-    // draw skybox first
-    glDepthMask(GL_FALSE);
-    cmShader->use();
-    cmShader->setMat4("projection", glm::value_ptr(projection));
-    cmShader->setMat4("view", glm::value_ptr(cmview));
-    glBindVertexArray(cmVAO);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glDepthMask(GL_TRUE);
-    // draw scene inside second
+    // draw scene
     objectShader->use();
     objectShader->setMat4("projection", glm::value_ptr(projection));
     objectShader->setMat4("view", glm::value_ptr(view));
@@ -161,6 +152,14 @@ void Game::Render()
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));     // it's a bit too big for our scene, so scale it down
     objectShader->setMat4("model", glm::value_ptr(model));
     modelOne->Draw(*objectShader);
+    // draw skybox
+    glDepthFunc(GL_LEQUAL);
+    cmShader->use();
+    cmShader->setMat4("projection", glm::value_ptr(projection));
+    cmShader->setMat4("view", glm::value_ptr(cmview));
+    glBindVertexArray(cmVAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     ////-------------------------second pass: bind default framebuffer and draw textured quad--------------------
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
