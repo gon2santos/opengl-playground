@@ -1,4 +1,6 @@
 // g++ (-O0 sin optimizacion, para debug) -o main ./src/main.cpp ./src/glad.c ./include/Game.cpp ./include/Shader.cpp ./include/stb_image.cpp ./include/Camera.cpp -w -lSDL2 (-g agregar debug symbols)
+// sudo apt-get install libassimp-dev para assimp y sudo apt-get install libsdl2-dev para sdl
+
 #include "../include/Game.hpp"
 Game *game = nullptr;
 int main(int, char **)
