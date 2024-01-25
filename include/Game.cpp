@@ -146,11 +146,17 @@ void Game::Render()
     objectShader->setVec3("viewPos", camera->cameraPos);
     lightPos = glm::vec3(cos(lastFrame / 1000) * 2.f, 1.0f, sin(lastFrame / 1000) * 2.f);
     objectShader->setVec3("light.position", lightPos);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture); // bindeo el cubemap para que se llene el uniform skybox
     // render the loaded model
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));     // it's a bit too big for our scene, so scale it down
     objectShader->setMat4("model", glm::value_ptr(model));
+
+    glBindVertexArray(cmVAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cmtexture);
+    // glDrawArrays(GL_TRIANGLES, 0, 36);
+
     modelOne->Draw(*objectShader);
     // draw skybox
     glDepthFunc(GL_LEQUAL);

@@ -25,7 +25,9 @@ uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
 
-void main()
+uniform samplerCube skybox;
+
+/* void main()
 {
     //emission
     vec3 emission=vec3(texture(material.texture_emission1,TexCoords));
@@ -44,4 +46,10 @@ void main()
     
     vec3 result=ambient+diffuse+specular;//+emission
     FragColor=vec4(result,1.);//arreglar specular, no esta funcando bien
+} */
+
+void main(){
+    vec3 I=normalize(FragPos-viewPos);
+    vec3 R=reflect(I,normalize(Normal));
+    FragColor=vec4(texture(skybox,R).rgb,1.);
 }
